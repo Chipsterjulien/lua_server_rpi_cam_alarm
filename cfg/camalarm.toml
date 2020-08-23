@@ -1,0 +1,17 @@
+debug = true
+
+[default]
+# Same road that nginx config. See location's key
+routeInitial = "/api/v1"
+pidFile = "/app/run/pid.toml"
+where = "Salon"
+# Same port that nginx config. Used to restart alarm after a powercut or a reboot, only if alarm was working
+port = 8090
+
+[alarm]
+launchProcessList = ["(/opt/vc/bin/raspivid -n -w 800 -h 600 -t 0 -fps 2 -cd MJPEG -o - | /usr/local/bin/streameye -p 8080)&"]
+stopProcessList = ["raspivid", "streameye"]
+
+[stream]
+launchProcessList = ["(/opt/vc/bin/raspivid -n -w 800 -h 600 -t 0 -fps 2 -cd MJPEG -o - | /usr/local/bin/streameye -p 8081)&"]
+stopProcessList = ["raspivid", "streameye"]
