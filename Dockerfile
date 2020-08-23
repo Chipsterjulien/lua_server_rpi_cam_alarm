@@ -10,7 +10,7 @@ RUN apk update && \
     apk del git make gcc musl-dev luarocks5.1 && \
     rm /var/cache/apk/*
 
-RUN adduser -H -D -g 'www' -s /bin/false www
+RUN adduser -H -D -g 'www' -G tty -s /bin/false www
 
 # Se placer dans le répertoire /app
 WORKDIR /app
