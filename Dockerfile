@@ -21,12 +21,12 @@ RUN mkdir /app/cfg /app/run && \
 
 # Ajout de ma configuration personnel
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
-COPY ./nginx/conf.d/camalarm.conf /etc/nginx/conf.d/camalarm.conf
+COPY ./nginx/conf.d/camAlarm.conf /etc/nginx/conf.d/camAlarm.conf
 
 # Ajout du programme lua pour gérer l'API REST
 COPY *.lua /app/
 # Ajout de la configuration placée avec l'application
-COPY ./cfg/camalarm.toml /app/cfg
+COPY ./cfg/camAlarm.toml /app/cfg
 
 # On rend /opt/vc accessible depuis le container pour avoir les lib nécessaire à raspistill et raspivid
 VOLUME /opt/vc:/opt/vc
