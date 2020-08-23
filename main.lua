@@ -12,12 +12,11 @@
 --  or
 --  http localhost:8180/api/state
 
--- package.path = package.path .. ";/etc/nginx/lua/camalarm/?.lua"
 package.path = package.path .. ';/app/?.lua'
 
 local ngx = ngx or require( 'ngx' )
 
-local confFile = '/app/cfg/camalarm.toml'
+local confFile = '/app/cfg/camAlarm.toml'
 
 local json = require('json')
 local toml = require('toml')
