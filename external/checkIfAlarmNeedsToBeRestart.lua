@@ -13,9 +13,11 @@ local function checkIfAlarmNeedsToBeRestart( confFile )
   local pidFile = data.default.pidFile
 
   -- Check if pidFile exists
-  if not fileExists( pidFile ) then return end
+  if not fileExists( pidFile ) then
+    return
+  end
 
-  -- Check if alarm is running, not streaming
+  -- Check if alarm is running (not stream)
   local pidFileData = loadPID( pidFile )
   if pidFileData and pidFileData.alarm then
     local http = require( 'socket.http' )
