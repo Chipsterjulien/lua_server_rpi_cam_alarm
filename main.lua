@@ -16,7 +16,6 @@ package.path = package.path .. ';/app/?.lua;/app/external/?.lua;/app/third-party
 
 local json = require('json')
 local routes = require('routes')
-
 local checkIfAlarmNeedsToBeRestart = require( 'external.checkIfAlarmNeedsToBeRestart' )
 local errorResponse = require( 'external.errorResponse' )
 local loadConfig = require( 'external.loadConfig' )
@@ -45,21 +44,8 @@ local function main()
     errorResponse( 500, err )
   end
 
-  -- Check if request method is not GET
-  if ngx.var.request_method ~= 'GET' then
-    -- Request method does not exist
-    errorResponse( 405, ngx.var.request_method .. ' method is not supported in ' .. ngx.var.uri .. ' call' )
-    ngx.exit( 405 )
-  end
-
   local routeInitial = data.default.routeInitial:gsub( '/$', '' )
   local road = ngx.var.uri:gsub( routeInitial, '' )
-
-  -- If road and ngx.var.uri are identical then road is not good
-  if road == ngx.var.uri then
-    errorResponse( 404, road .. ' URL does not exist' )
-    ngx.exit( 404 )
-  end
 
   -- Check if road exists
   if not getWebRoutes[ road ] then
@@ -84,8 +70,9 @@ local function main()
     ngx.exit( 404 )
   end
 
-  -- Add location to state
+  -- Add location to the response
   state.where = data.default.where
+
   if not state.alarm then state.alarm = 'stop' end
   if not state.stream then state.stream = 'stop' end
 
@@ -103,5 +90,6 @@ initTime = os.clock()
 if not arg or #arg == 0 then
   main()
 else
+  -- Fonction qui n'est jamais exécutée pour le moment
   checkIfAlarmNeedsToBeRestart( confFile )
 end
