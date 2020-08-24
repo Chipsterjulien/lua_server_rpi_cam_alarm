@@ -7,7 +7,7 @@ local function errorResponse( codeINT, errorStr )
 
   ngx.say( json.encode( { error = errorStr, code = codeINT } ) )
 
-  ngx.log( ngx.NOTICE, string.format( '\n\nError elapsed time: %.2f ms\n\n', ( os.clock() - initTime ) * 1000 ) )
+  -- ngx.log( ngx.NOTICE, string.format( '\n\nError elapsed time: %.2f ms\n\n', ( os.clock() - initTime ) * 1000 ) )
 
   ngx.exit( codeINT )
 end
