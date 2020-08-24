@@ -1,8 +1,13 @@
+local exec = require( 'external.exec' )
+local fileExists = require( 'external.fileExists' )
+local loadPID = require( 'external.loadPID' )
+local savePID = require( 'external.savePID' )
+
 local routes = {}
 
-local function startVideoAndStream( pidFilename, launchProcessList, stopProcessList, action, toml, external )
-  if external.fileExists( pidFilename ) then
-    return routes.stateAlarm( pidFilename, toml, external )
+local function startVideoAndStream( pidFilename, launchProcessList, stopProcessList, action )
+  if fileExists( pidFilename ) then
+    return routes.stateAlarm( pidFilename )
   end
 
   -- Launch all processes in list
@@ -13,7 +18,7 @@ local function startVideoAndStream( pidFilename, launchProcessList, stopProcessL
   -- Get process pid
   local pidObjectList = {}
   for _, procName in ipairs( stopProcessList ) do
-    local pid = external.exec( 'pgrep ^' .. procName .. '$' )
+    local pid = exec( 'pgrep ^' .. procName .. '$' )
     table.insert( pidObjectList, { pid = pid, name = procName } )
   end
 
@@ -46,7 +51,7 @@ local function startVideoAndStream( pidFilename, launchProcessList, stopProcessL
   pidList[ action ] = 'start'
 
   -- Save table to pidFile
-  local err = external.savePID( pidFilename, pidList, toml )
+  local err = savePID( pidFilename, pidList )
   if err then
     for _, obj in ipairs( pidObjectList ) do
       if tonumber( obj.pid ) ~= nil then
@@ -60,8 +65,8 @@ local function startVideoAndStream( pidFilename, launchProcessList, stopProcessL
   return { [ action ] = 'start' }, nil
 end
 
-local function stopVideoAndStream( pidFilename, action, toml, external )
-  local pidList = external.loadPID( pidFilename, toml )
+local function stopVideoAndStream( pidFilename, action )
+  local pidList = loadPID( pidFilename )
 
   if pidList then
     for i=#pidList, 1, -1 do
@@ -78,8 +83,8 @@ end
 -- roads
 --------
 
-function routes.stateAlarm( pidFilename, toml, external )
-  local pidList = external.loadPID( pidFilename, toml )
+function routes.stateAlarm( pidFilename )
+  local pidList = loadPID( pidFilename )
   if pidList == nil then
     return { alarm = 'stop', stream = 'stop'}, nil
   end
@@ -92,36 +97,36 @@ function routes.stateAlarm( pidFilename, toml, external )
   end
 end
 
-function routes.startAlarm( data, toml, external )
+function routes.startAlarm( data )
   local pidFilename = data.default.pidFile
   local launchProcessList = data.alarm.launchProcessList
   local stopProcessList = data.alarm.stopProcessList
   local action = 'alarm'
 
-  return startVideoAndStream( pidFilename, launchProcessList, stopProcessList, action, toml, external )
+  return startVideoAndStream( pidFilename, launchProcessList, stopProcessList, action )
 end
 
-function routes.startStream( data, toml, external )
+function routes.startStream( data )
   local pidFilename = data.default.pidFile
   local launchProcessList = data.stream.launchProcessList
   local stopProcessList = data.stream.stopProcessList
   local action = 'stream'
 
-  return startVideoAndStream( pidFilename, launchProcessList, stopProcessList, action, toml, external )
+  return startVideoAndStream( pidFilename, launchProcessList, stopProcessList, action )
 end
 
-function routes.stopAlarm( data, toml, external )
+function routes.stopAlarm( data )
   local pidFilename = data.default.pidFile
   local action = 'alarm'
 
-  return stopVideoAndStream( pidFilename, action, toml, external )
+  return stopVideoAndStream( pidFilename, action )
 end
 
-function routes.stopStream( data, toml, external )
+function routes.stopStream( data )
   local pidFilename = data.default.pidFile
   local action = 'stream'
 
-  return stopVideoAndStream( pidFilename, action, toml, external )
+  return stopVideoAndStream( pidFilename, action )
 end
 
 return routes
