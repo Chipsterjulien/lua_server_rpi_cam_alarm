@@ -8,9 +8,9 @@
 --  pgrep
 
 -- Using:
---  curl localhost:8180/api/state
+--  curl localhost:8090/api/stateAlarm
 --  or
---  http localhost:8180/api/state
+--  http localhost:8090/api/stateAlarm
 
 package.path = package.path .. ';/app/?.lua;/app/external/?.lua;/app/third-party/?.lua'
 
