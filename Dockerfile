@@ -25,8 +25,9 @@ COPY ./nginx/conf.d/camAlarm.conf /etc/nginx/conf.d/camAlarm.conf
 
 # Ajout du programme lua pour gérer l'API REST
 COPY *.lua /app/
-# Ajout de la configuration placée avec l'application
-COPY ./cfg/camAlarm.toml /app/cfg
+COPY external/ /app/external
+COPY third-party/ /app/third-party
+COPY cfg/ /app/cfg
 
 # On rend /opt/vc accessible depuis le container pour avoir les lib nécessaire à raspistill et raspivid
 VOLUME /opt/vc:/opt/vc
