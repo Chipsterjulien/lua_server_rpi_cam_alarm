@@ -9,9 +9,11 @@ where = "Salon"
 port = 8090
 
 [alarm]
+beforeStartProcessList = ["killall -9 raspivid"]
 launchProcessList = ["(/opt/vc/bin/raspivid -n -w 800 -h 600 -t 0 -fps 2 -cd MJPEG -o - | /usr/local/bin/streameye -p 8080)&"]
 stopProcessList = ["raspivid", "streameye"]
 
 [stream]
+beforeStartProcessList = ["killall -9 raspivid"]
 launchProcessList = ["(/opt/vc/bin/raspivid -n -w 800 -h 600 -t 0 -fps 2 -cd MJPEG -o - | /usr/local/bin/streameye -p 8081)&"]
 stopProcessList = ["raspivid", "streameye"]

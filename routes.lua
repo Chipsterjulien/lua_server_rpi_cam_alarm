@@ -3,17 +3,26 @@ local fileExists = require( 'external.fileExists' )
 local loadPID = require( 'external.loadPID' )
 local savePID = require( 'external.savePID' )
 
+local ngx = ngx or require( 'ngx' )
+
 local routes = {}
 
-local function startVideoAndStream( pidFilename, launchProcessList, stopProcessList, action )
+local function startVideoAndStream( pidFilename, beforeStartProcessList, launchProcessList, stopProcessList, action )
   if fileExists( pidFilename ) then
     return routes.stateAlarm( pidFilename )
+  end
+
+  -- Launch all processes in list before starting
+  for _, cmd in ipairs( beforeStartProcessList ) do
+    os.execute( cmd )
   end
 
   -- Launch all processes in list
   for _, cmd in ipairs( launchProcessList ) do
     os.execute( cmd )
   end
+
+  ngx.sleep(0.2)
 
   -- Get process pid
   local pidObjectList = {}
@@ -99,20 +108,22 @@ end
 
 function routes.startAlarm( data )
   local pidFilename = data.default.pidFile
+  local beforeStartProcessList = data.alarm.beforeStartProcessList
   local launchProcessList = data.alarm.launchProcessList
   local stopProcessList = data.alarm.stopProcessList
   local action = 'alarm'
 
-  return startVideoAndStream( pidFilename, launchProcessList, stopProcessList, action )
+  return startVideoAndStream( pidFilename, beforeStartProcessList, launchProcessList, stopProcessList, action )
 end
 
 function routes.startStream( data )
   local pidFilename = data.default.pidFile
+  local beforeStartProcessList = data.alarm.beforeStartProcessList
   local launchProcessList = data.stream.launchProcessList
   local stopProcessList = data.stream.stopProcessList
   local action = 'stream'
 
-  return startVideoAndStream( pidFilename, launchProcessList, stopProcessList, action )
+  return startVideoAndStream( pidFilename, beforeStartProcessList, launchProcessList, stopProcessList, action )
 end
 
 function routes.stopAlarm( data )
