@@ -6,7 +6,7 @@ LABEL maintainer="julien"
 RUN apk update && \
     apk add --no-cache luarocks5.1 nginx nginx-mod-http-lua lua5.1-socket git make gcc musl-dev raspberrypi vim nano && \
     git clone https://github.com/ccrisan/streameye.git && cd streameye && make && make install && cd .. && rm -rf streameye && \
-    luarocks-5.1 install lua-resty-core && \
+    luarocks-5.1 install lua-resty-core
 
 RUN adduser -H -D -g 'www' -G tty -s /bin/false www
 
@@ -23,8 +23,10 @@ COPY ./nginx/conf.d/camAlarm.conf /etc/nginx/conf.d/camAlarm.conf
 
 # Ajout du programme lua pour gérer l'API REST
 COPY *.lua /app/
+COPY external/ /app/external
+COPY third-party/ /app/third-party
 # Ajout de la configuration placée avec l'application
-COPY ./cfg/camAlarm.toml /app/cfg
+COPY cfg/ /app/cfg
 
 # On rend /opt/vc accessible depuis le container pour avoir les lib nécessaire à raspistill et raspivid
 VOLUME /opt/vc:/opt/vc
