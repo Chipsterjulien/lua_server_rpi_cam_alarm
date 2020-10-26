@@ -14,7 +14,7 @@
 
 package.path = package.path .. ';/app/?.lua;/app/external/?.lua;/app/third-party/?.lua'
 
-local json = require('json')
+local json = require('third-party.json')
 local routes = require('routes')
 local checkIfAlarmNeedsToBeRestart = require( 'external.checkIfAlarmNeedsToBeRestart' )
 local errorResponse = require( 'external.errorResponse' )
